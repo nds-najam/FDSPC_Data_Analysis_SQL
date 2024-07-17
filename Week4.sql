@@ -22,7 +22,7 @@ FROM customers
 FULL JOIN sales ON customers.id = sales.customer_id
 FULL JOIN products ON sales.product_id = products.id;
 
-
+-- Analyze the food preferences of customers
 SELECT t2.food_type_new, SUM(t1.quantity) AS item_quantity
 FROM orders_items t1
 LEFT JOIN (
