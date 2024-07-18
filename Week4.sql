@@ -57,3 +57,24 @@ LEFT JOIN (
 ON r.restaurant_id = t1.restaurant_id
 WHERE item_quantity IS NULL
 ORDER BY restaurant_id ;
+
+-- Week 4 Graded Assignment
+-- Q3 What is the highest number of orders placed by any customer?
+SELECT customer_id,count(order_id) as NumOrders from orders GROUP BY customer_id ORDER BY NumOrders DESC;
+-- Q4 Use ranking functions to find the top 3 food items (based on the quantity ordered) for restaurant id = 10 
+select *, rank() over (order by t1.total_quantity) as item_rank from
+(
+SELECT restaurant_id,oi.item_id,item_name,sum(quantity) as total_quantity
+from orders_items oi INNER JOIN food_items fi
+ON oi.item_id = fi.item_id
+where fi.restaurant_id = 10
+group by oi.item_id
+order by total_quantity desc) t1 ;
+
+-- Q5  find the items that have not been ordered by any customer.
+-- Q5 find the items that have not been ordered by any customer.
+SELECT f.item_id, COUNT(f.item_id) as item_count
+FROM orders_items o  RIGHT JOIN food_items f
+ON o.item_id = f.item_id
+GROUP BY f.item_id
+having item_count = 0;
