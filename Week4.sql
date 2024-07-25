@@ -78,3 +78,17 @@ FROM orders_items o  RIGHT JOIN food_items f
 ON o.item_id = f.item_id
 GROUP BY f.item_id
 having item_count = 0;
+
+-- Q6 query to retrieve the names of all those customers who have placed an order with FoodHunter, 
+-- along with the total number of orders they have placed.
+SELECT c.customer_id, COUNT(o.order_id) AS total_orders
+FROM customers c
+LEFT join orders o ON c.customer_id = o.customer_id
+GROUP BY c.customer_id;
+
+-- Q7 What is the average calories per dish for each cuisine type? Values are close to nearest integer.
+select cuisine, avg(calories) from restaurants r
+inner join food_items fi on r.restaurant_id = fi.restaurant_id
+group by cuisine;
+
+
