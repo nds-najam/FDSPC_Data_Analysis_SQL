@@ -91,4 +91,12 @@ select cuisine, avg(calories) from restaurants r
 inner join food_items fi on r.restaurant_id = fi.restaurant_id
 group by cuisine;
 
+-- Q8 What is the highest average order rating of a driver, rounded to a decimal place?
+select driver_id,avg(order_rating) as avgrating from orders group by driver_id order by avgrating desc;
 
+-- Q9 What are the top two most ordered items and their order count?
+select oi.item_id,item_name,sum(quantity)  from orders_items oi
+inner join food_items fi on oi.item_id=fi.item_id
+group by oi.item_id order by sum(quantity) desc;
+
+-- Q10 
