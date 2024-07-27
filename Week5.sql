@@ -48,3 +48,6 @@ t1.num_sales,
 FROM vendors_metrics t1
 INNER JOIN vendors t2 ON t1.company_id = t2.company_id;
 
+DELETE FROM table_name
+WHERE condition;
+
