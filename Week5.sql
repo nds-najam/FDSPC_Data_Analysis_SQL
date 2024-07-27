@@ -30,7 +30,7 @@ MODIFY COLUMN num_of_res INT; -- to modify the table
 
 UPDATE competitor_analysis
 SET num_of_res = CASE
-	WHEN company_id = 'C1' then 120
+    WHEN company_id = 'C1' then 120
     WHEN company_id = 'C2' then 140
     WHEN company_id = 'C3' then 160
     WHEN company_id = 'C4' then 180
@@ -51,3 +51,5 @@ INNER JOIN vendors t2 ON t1.company_id = t2.company_id;
 DELETE FROM table_name
 WHERE condition;
 
+DROP TABLE table_name;
+TRUNCATE TABLE table_name;
