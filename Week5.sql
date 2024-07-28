@@ -98,3 +98,49 @@ select
 from pos_data
 group by sku_id
 order by total_revenue asc;
+
+-- By product type
+select
+sku_id,total_revenue,total_traffic,
+case
+when total_revenue != 0 and total_traffic != 0 then 'A'
+when total_revenue = 0 and total_traffic = 0 then 'B'
+when total_revenue != 0 and total_traffic = 0 then 'C'
+when total_revenue = 0 and total_traffic != 0 then 'D'
+end as 'prod_type'
+from
+(
+select 
+	sku_id,
+	sum(`Revenue`) as total_revenue,
+    sum(`page_traffic`) as total_traffic
+from pos_data
+group by sku_id
+order by total_revenue asc
+) T1;
+
+-- Summation by prod type
+select prod_type, sum(total_traffic) as Total_Traffic, sum(total_revenue) as Total_Revenue, count(prod_type) as Total_Products
+from
+(
+select
+sku_id,total_revenue,total_traffic,
+case
+when total_revenue != 0 and total_traffic != 0 then 'A'
+when total_revenue = 0 and total_traffic = 0 then 'B'
+when total_revenue != 0 and total_traffic = 0 then 'C'
+when total_revenue = 0 and total_traffic != 0 then 'D'
+end as 'prod_type'
+from
+(
+select 
+	sku_id,
+	sum(`Revenue`) as total_revenue,
+    sum(`page_traffic`) as total_traffic
+from pos_data
+group by sku_id
+order by total_revenue asc
+) T1
+) T2
+group by prod_type
+order by prod_type;
