@@ -145,7 +145,8 @@ order by total_revenue asc
 group by prod_type
 order by prod_type;
 
--- getting unique campaigns
+-- To understand the correlation between the different products based on
+-- campaigns, total revenue and total traffic from the dataset
 select t2.sku_id, total_revenue, total_traffic, total_campaigns from
 (select sku_id, sum(num_unique_campaigns) as total_campaigns from online_data group by sku_id) t0
 right join
@@ -171,3 +172,74 @@ order by total_revenue asc
 ) t2
 ON t0.sku_id = t2.sku_id;
 
+
+-- To understand the correlation between the different product types A,B,C
+-- and D based on campaigns, total revenue and total traffic from the dataset
+SELECT prod_type, sum(total_campaigns) AS Total_Campaigns,
+SUM(total_traffic) AS Total_Traffic,
+SUM(total_revenue) AS Total_Revenue,
+COUNT(prod_type) AS Total_Products
+FROM
+(
+SELECT t2.sku_id, prod_type, total_revenue, total_traffic, Total_Campaigns
+FROM
+(SELECT sku_id, sum(num_unique_campaigns) AS Total_Campaigns FROM
+online_data group by sku_id) t0
+RIGHT JOIN
+(
+SELECT sku_id, total_revenue, total_traffic,
+CASE
+when total_revenue!=0 and total_traffic!=0 then 'A'
+when total_revenue=0 and total_traffic=0 then 'B'
+when total_revenue!=0 and total_traffic=0 then 'C'
+when total_revenue=0 and total_traffic!=0 then 'D'
+END AS 'prod_type'
+FROM
+(
+SELECT SKU_ID, SUM(`Revenue`) AS Total_Revenue, SUM(`Page_traffic`) AS
+Total_Traffic
+FROM pos_data
+GROUP BY SKU_ID
+) t1
+) t2
+on
+t0.sku_id = t2.sku_id
+) t3
+GROUP BY prod_type
+ORDER BY Total_Campaigns desc;
+
+-- To find the the ratio of total traffic to total campaigns for each product type
+-- A,B,C and D from the dataset:
+SELECT prod_type, sum(total_campaigns) AS Total_Campaigns,
+SUM(total_traffic) AS Total_Traffic,
+SUM(total_revenue) AS Total_Revenue,
+count(prod_type) AS Total_Products,
+SUM(total_traffic)/SUM(total_campaigns) AS Campaign_Ratio
+FROM
+(
+SELECT t2.sku_id, prod_type, total_revenue, total_traffic, Total_Campaigns
+FROM
+(SELECT sku_id, sum(num_unique_campaigns) AS Total_Campaigns from
+online_data group by sku_id) t0
+RIGHT JOIN
+(
+SELECT sku_id, total_revenue, total_traffic,
+CASE
+when total_revenue!=0 and total_traffic!=0 then 'A'
+when total_revenue=0 and total_traffic=0 then 'B'
+when total_revenue!=0 and total_traffic=0 then 'C'
+when total_revenue=0 and total_traffic!=0 then 'D'
+END AS 'prod_type'
+FROM
+(
+SELECT SKU_ID, SUM(`Revenue`) AS Total_Revenue, SUM(`Page_traffic`) AS
+Total_Traffic
+FROM pos_data
+GROUP BY SKU_ID
+) t1
+) t2
+on
+t0.sku_id = t2.sku_id
+) t3
+GROUP BY prod_type
+ORDER BY Total_Campaigns desc;
