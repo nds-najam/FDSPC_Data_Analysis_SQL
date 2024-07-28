@@ -307,3 +307,11 @@ select count(sku_id) from prod_data
 where Product_availability like '%Out of Stock%' or Product_availability like '%Technical Issue%';
 
 -- 
+-- 9. Fill in the following query to find all the product ids for which a promotion has not been run. 
+-- Consider that pos_data contains all the product ids.
+select t1.sku_id,Promotion_id from pos_data t1
+left join vpc_data t2
+on t1.sku_id=t2.sku_id and t1.pos_date = t2.vpc_date
+group by t1.sku_id
+having count(promotion_id)=0;
+
