@@ -266,3 +266,12 @@ select * from pos_data;
 select count(distinct sku_id)
 from pos_data
 where page_traffic = 0;
+
+--
+-- 4. Which month saw the highest spend on promotion of products? Use vpc_data table for this.
+select * from vpc_data;
+select month(vpc_date) as vpcMonth,sum(sum_of_spend) as MonthlySpend
+from vpc_data
+group by vpcMonth
+order by MonthlySpend desc;
+
