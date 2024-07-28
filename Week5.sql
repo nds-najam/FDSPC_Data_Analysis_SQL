@@ -144,3 +144,30 @@ order by total_revenue asc
 ) T2
 group by prod_type
 order by prod_type;
+
+-- getting unique campaigns
+select t2.sku_id, total_revenue, total_traffic, total_campaigns from
+(select sku_id, sum(num_unique_campaigns) as total_campaigns from online_data group by sku_id) t0
+right join
+(
+select
+sku_id,total_revenue,total_traffic,
+case
+when total_revenue != 0 and total_traffic != 0 then 'A'
+when total_revenue = 0 and total_traffic = 0 then 'B'
+when total_revenue != 0 and total_traffic = 0 then 'C'
+when total_revenue = 0 and total_traffic != 0 then 'D'
+end as 'prod_type'
+from
+(
+select 
+	sku_id,
+	sum(`Revenue`) as total_revenue,
+    sum(`page_traffic`) as total_traffic
+from pos_data
+group by sku_id
+order by total_revenue asc
+) t1
+) t2
+ON t0.sku_id = t2.sku_id;
+
