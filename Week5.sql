@@ -53,3 +53,48 @@ WHERE condition;
 
 DROP TABLE table_name;
 TRUNCATE TABLE table_name;
+
+select min(Pos_Date),max(Pos_Date) from pos_data;
+select year(pos_date) as date_year,
+	sum(revenue) as total_revenue
+    from pos_data group by date_year;
+
+-- Segment-wise revenue
+select year(pos_date) as date_year,
+	sum(revenue) as total_revenue,
+    sum(case when segment='Hair Care' then revenue else 0 end) as hair_care_revenue,
+    sum(case when segment='Makeup' then revenue else 0 end) as makeup_revenue,
+    sum(case when segment='skincare' then revenue else 0 end) as skincare_revenue
+    FROM pos_data group by date_year;
+    
+    
+-- Segment-wise % increase
+select
+	date_year,
+    total_revenue,
+    (total_revenue - lag(total_revenue) over (order by date_year)) / lag(total_revenue) over (order by date_year) * 100 as total_percentage_change,
+    hair_care_revenue,
+    (hair_care_revenue - lag(hair_care_revenue) over (order by date_year)) / lag(hair_care_revenue) over (order by date_year) * 100 as hair_care_percentage_change,
+    makeup_revenue,
+    (makeup_revenue - lag(makeup_revenue) over (order by date_year)) / lag(makeup_revenue) over (order by date_year) * 100 as makeup_percentage_change,
+    skincare_revenue,
+    (skincare_revenue - lag(skincare_revenue) over (order by date_year)) / lag(skincare_revenue) over (order by date_year) * 100 as skincare_revenue_percentage_change
+FROM (
+    select year(pos_date) as date_year,
+	sum(revenue) as total_revenue,
+    sum(case when segment='Hair Care' then revenue else 0 end) as hair_care_revenue,
+    sum(case when segment='Makeup' then revenue else 0 end) as makeup_revenue,
+    sum(case when segment='skincare' then revenue else 0 end) as skincare_revenue
+    FROM pos_data group by date_year
+    ) t1;
+    
+select * from prod_data;
+select * from pos_data;
+select count(distinct SKU_ID) from prod_data;
+select 
+	sku_id,
+	sum(`Revenue`) as total_revenue,
+    sum(`page_traffic`) as total_traffic
+from pos_data
+group by sku_id
+order by total_revenue asc;
