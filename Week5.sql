@@ -243,3 +243,21 @@ t0.sku_id = t2.sku_id
 ) t3
 GROUP BY prod_type
 ORDER BY Total_Campaigns desc;
+
+--
+-- Quiz Week-5
+--
+-- 1. Which SKU_ID has the maximum number of campaigns launched for it? Use the online_data table for this.
+select sku_id, sum(num_unique_campaigns) as maxCampaigns
+from online_data
+group by sku_id
+order by maxCampaigns desc;
+
+--
+-- 2. Which segment has the lowest revenue overall?
+select * from pos_data;
+select segment, sum(`Revenue`) as segRev from pos_data
+group by segment
+order by segRev desc;
+
+
