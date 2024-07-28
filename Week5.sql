@@ -301,3 +301,9 @@ from prod_data) t1
 where prod_order=1;
 
 --
+-- 8. Using the product_availability column in the prod_data table, 
+-- find out the total number of products that are either Out of Stock or have a Technical Issue.
+select count(sku_id) from prod_data 
+where Product_availability like '%Out of Stock%' or Product_availability like '%Technical Issue%';
+
+-- 
