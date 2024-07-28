@@ -286,3 +286,18 @@ group by segment
 order by avgSearch desc;
 
 --
+-- 6. How many sku_ids are there in pos_data whose unit_price is the minimum?
+select * from pos_data;
+select count(distinct sku_id) from pos_data
+where unit_price=0;
+
+--
+-- 7. Fill in the following query to find the latest 5_star_rating for each product from the product attribute table.
+select * from prod_data;
+select * from (
+select sku_id, 5_Star_Rating, row_number()
+over(partition by sku_id order by prod_date desc) as prod_order
+from prod_data) t1
+where prod_order=1;
+
+--
