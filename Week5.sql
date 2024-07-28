@@ -315,3 +315,12 @@ on t1.sku_id=t2.sku_id and t1.pos_date = t2.vpc_date
 group by t1.sku_id
 having count(promotion_id)=0;
 
+--
+-- 10.Fill in the query to find the percentage change in total quantity per promotion id over the years.
+SELECT *, 
+((sum_quant-(lag(sum_quant) 
+    OVER(PARTITION BY promotion_id))))/(lag(sum_quant) OVER(PARTITION BY promotion_id)) AS percent_change
+FROM
+(SELECT YEAR(vpc_date) date_year, promotion_id, SUM(sum_of_quantity) AS sum_quant 
+FROM vpc_data 
+GROUP BY promotion_id, date_year) t1;
