@@ -275,3 +275,14 @@ from vpc_data
 group by vpcMonth
 order by MonthlySpend desc;
 
+--
+-- 5.Which segment has the maximum number of average search terms?
+select * from search_rank_data;
+select * from pos_data;
+select segment, avg(search_terms) avgSearch
+from search_rank_data srd 
+inner join pos_data pos on srd.sku_id = pos.sku_id
+group by segment
+order by avgSearch desc;
+
+--
