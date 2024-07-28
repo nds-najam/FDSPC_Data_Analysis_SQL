@@ -260,4 +260,9 @@ select segment, sum(`Revenue`) as segRev from pos_data
 group by segment
 order by segRev desc;
 
-
+--
+-- 3. Which is the correct query to find the number of product ids that have had zero page traffic so far?
+select * from pos_data;
+select count(distinct sku_id)
+from pos_data
+where page_traffic = 0;
